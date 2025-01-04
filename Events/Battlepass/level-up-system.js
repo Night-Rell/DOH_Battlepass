@@ -25,7 +25,6 @@ module.exports = {
 
         let notifyEmbed = new EmbedBuilder()
             .setAuthor({ name: `Оповещения ${message.guild.name}`, iconURL: message.guild.iconURL({ forceStatic: false }) })
-            .setColor('Blurple')
             .setTitle('Поздравляем!')
 
         if (!user_bp) {
@@ -37,6 +36,12 @@ module.exports = {
 
         user_bp.messageCount += 1
         await user_bp.save();
+
+        if (user_bp.has_goldpass) {
+            notifyEmbed.setColor('Gold')
+        } else {
+            notifyEmbed.setColor('Blurple')
+        }
 
 
         if (user_bp.messageCount === 500) {
