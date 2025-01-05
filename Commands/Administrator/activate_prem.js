@@ -2,7 +2,7 @@ const { SlashCommandBuilder, CommandInteraction, EmbedBuilder, ActionRowBuilder,
 
 const { generateImage } = require("../../Utils/generate_pass");
 
-const battlepassDB = require("../../Shemas/battlepass");
+const battlepassDB = require('../../Shemas/battlepass');
 
 const { NOTIICATION_CHANNEL_ID } = require('../../config.json');
 

@@ -22,8 +22,8 @@ module.exports = {
         let user_bp = await battlepassDB.findOne({ userId: user.id })
 
         if (!user_bp) {
-            battlepassDB.create({
-                userId: message.author.id
+            user_bp = battlepassDB.create({
+                userId: interaction.user.id
             })
         }
 
