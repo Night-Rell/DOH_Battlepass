@@ -21,6 +21,12 @@ module.exports = {
 
         let user_bp = await battlepassDB.findOne({ userId: user.id })
 
+        if (!user_bp) {
+            battlepassDB.create({
+                userId: message.author.id
+            })
+        }
+
         const imageBuffer = await generateImage(user.id, user_bp.has_goldpass);
         const attachment = new AttachmentBuilder(imageBuffer, {name: 'image.png'});
 
@@ -32,6 +38,8 @@ module.exports = {
                         name: `Прогресс ${user.username}`,
                         iconURL: user.avatarURL({ forceStatic: false })
                     })
+                    .setDescription(`У вас сейчас ${user_bp.level} уровень пасса`)
+                    .setFooter({ text: user_bp.messageCount >= 5000 ? `пасс пройден (5 уровень)` : `${user_bp.messageCount} / ${user_bp.to_levelUp}` })
                     .setImage('attachment://image.png')
             ], files: [attachment]
 

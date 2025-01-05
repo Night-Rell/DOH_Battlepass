@@ -31,7 +31,7 @@ module.exports = {
             //Создаем профиль бд если его нет
             battlepassDB.create({
                 userId: message.author.id
-            }).з
+            })
         }
 
         user_bp.messageCount += 1
@@ -46,7 +46,9 @@ module.exports = {
 
         if (user_bp.messageCount === 500) {
             
-            user_bp.level = 1
+            user_bp.level = 1;
+            
+            user_bp.to_levelUp = 1000;
             await user_bp.save();
 
             if (user_bp.has_goldpass) {
@@ -67,6 +69,8 @@ module.exports = {
         else if (user_bp.messageCount === 1000) {
             
             user_bp.level = 2
+            
+            user_bp.to_levelUp = 2000;
             await user_bp.save();
 
             if (user_bp.has_goldpass) {
@@ -87,6 +91,8 @@ module.exports = {
         else if (user_bp.messageCount === 2000) {
             
             user_bp.level = 3
+            
+            user_bp.to_levelUp = 3000;
             await user_bp.save();
 
             if (user_bp.has_goldpass) {
@@ -109,8 +115,10 @@ module.exports = {
         else if (user_bp.messageCount === 3000) {
             
             user_bp.level = 4
+            
+            user_bp.to_levelUp = 5000;
             await user_bp.save();
-
+            
             if (user_bp.has_goldpass) {
                
                 notifyEmbed.setDescription(`🎉🎉 ${message.author} получил ${user_bp.level} уровень пасса. 🎉🎉\n\n *Награда*: **+50 уровней (GOLDPASS)** и **Lucky Arrow**`)

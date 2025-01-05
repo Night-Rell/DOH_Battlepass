@@ -26,7 +26,7 @@ module.exports = async (client) => {
 
             console.log(`🟡 Starterd refreshing application (/) commands...`);
 
-            const data = await rest.put(Routes.applicationCommands(CLIENT_ID), {
+            const data = await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
 
                 body: client.commandArray,
             })
