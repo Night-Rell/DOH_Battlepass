@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, CommandInteraction, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder,  AttachmentBuilder, StringSelectMenuOptionBuilder, PermissionFlagsBits, } = require('discord.js');
+const { SlashCommandBuilder, CommandInteraction, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder,  AttachmentBuilder, StringSelectMenuOptionBuilder, PermissionFlagsBits, ButtonStyle } = require('discord.js');
 
 const { generateImage } = require("../../Utils/generate_pass");
 
@@ -17,20 +17,22 @@ module.exports = {
      */
     async execute(interaction) {
 
-        const { guild, user } = interaction;
+        const { guild, user, } = interaction;
 
         let user_bp = await battlepassDB.findOne({ userId: user.id })
 
         if (!user_bp) {
-            user_bp = battlepassDB.create({
+            battlepassDB.create({
                 userId: interaction.user.id
             })
         }
 
+        const codeBtn = new ButtonBuilder().setCustomId('use-code').setLabel('Ввести код').setStyle(ButtonStyle.Secondary).setEmoji('<:fastforward:1325503818833727530>')
+
         const imageBuffer = await generateImage(user.id, user_bp.has_goldpass);
         const attachment = new AttachmentBuilder(imageBuffer, {name: 'image.png'});
 
-        interaction.reply({
+        await interaction.reply({
             embeds: [
                 new EmbedBuilder()
                     .setColor('Blurple')
@@ -41,40 +43,13 @@ module.exports = {
                     .setDescription(`У вас сейчас ${user_bp.level} уровень пасса`)
                     .setFooter({ text: user_bp.messageCount >= 5000 ? `пасс пройден (5 уровень)` : `${user_bp.messageCount} / ${user_bp.to_levelUp}` })
                     .setImage('attachment://image.png')
-            ], files: [attachment]
-
-            // components: [
-            //     new ActionRowBuilder().setComponents(
-            //         new StringSelectMenuBuilder()
-            //             .setCustomId(`staff_selectMenu_start`)
-            //             .setPlaceholder('Выберите желаемую должность')
-            //             .setMaxValues(1)
-            //             .setOptions(
-            //                 new StringSelectMenuOptionBuilder()
-            //                     .setLabel('Модератор')
-            //                     .setValue('moderator'),
-
-            //                 new StringSelectMenuOptionBuilder()
-            //                     .setLabel('Организатор мероприятий')
-            //                     .setValue('eventolog')
-            //             )
-
-            //     )
-            // ]
+            ], files: [attachment], components: [new ActionRowBuilder().setComponents(codeBtn)]
         });
 
-        // const db = await Staff.findOne({ guildId: interaction.guildId })
-        // if (!db) {
-        //     Staff.create({
-        //         guildName: guild.name,
-        //         guildId: interaction.guildId,
-        //         moderator: false,
-        //         eventolog: false,
-        //     });
-
-        //     return interaction.reply({ content: `Создан профиль в базе данных.`, ephemeral: true })
-        // };
-
-
+        setTimeout(async () => {
+            codeBtn.setDisabled(true);
+            
+            interaction.editReply({ components: [new ActionRowBuilder().setComponents(codeBtn)] });
+        }, 60000);
     },
 }
