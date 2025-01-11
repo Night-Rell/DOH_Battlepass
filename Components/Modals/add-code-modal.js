@@ -60,6 +60,6 @@ module.exports = {
             removeCodesBtn.setDisabled(true);
             
             interaction.message.edit({ components: [new ActionRowBuilder().setComponents(addCodesBtn, removeCodesBtn)] });
-        }, 30000);
+        }, 15000);
     },
 };

@@ -31,16 +31,8 @@ module.exports = {
             .setTitle('Поздравляем!')
          
         const selectedIndex = code_bp.activeCodes.findIndex((item, index) => item['Name'] === promocode)
-        const activatorsIndex = code_bp.Activators.findIndex((item, index) => item === promocode)
 
         let selectedOption = code_bp.activeCodes[selectedIndex];
-        let activatorsOption = code_bp.Activators[activatorsIndex];
-
-        console.log(selectedIndex, activatorsIndex, selectedOption, activatorsOption);
-        const codeBtn = new ActionRowBuilder()
-            .setComponents(
-                new ButtonBuilder().setCustomId('use-code').setLabel('Ввести код').setStyle(ButtonStyle.Secondary).setEmoji('<:fastforward:1325503818833727530>')
-            )  
 
         if (!selectedOption) {            //Если код неверный
             
@@ -54,7 +46,7 @@ module.exports = {
 
         } else {
 
-            if (activatorsOption[selectedOption['Name']].length >= selectedOption['Limit']) {   //Если превышен лимит активаций
+            if (selectedOption['Activators'] >= selectedOption['Limit']) {   //Если превышен лимит активаций
 
                 let limitEmbed = new EmbedBuilder()
                 .setAuthor({ name: `Оповещения ${guild.name}`, iconURL: guild.iconURL({ forceStatic: false }) })
@@ -66,7 +58,7 @@ module.exports = {
 
             } else {
 
-                if (activatorsOption[selectedOption['Name']].includes(String(user.id))) {
+                if (user_bp.activatedCodes.includes(selectedOption['Name'])) {      //Если участник вводил уже этот код
 
                     let alreadyEmbed = new EmbedBuilder()
                     .setAuthor({ name: `Оповещения ${guild.name}`, iconURL: guild.iconURL({ forceStatic: false }) })
@@ -79,12 +71,14 @@ module.exports = {
                 } else {
 
                     user_bp.messageCount += selectedOption['Reward'];
+                    await user_bp.activatedCodes.push(selectedOption['Name']);
                     await user_bp.save();
                          
-                    let activator = code_bp.Activators.find(item => item.hasOwnProperty(selectedOption['Name']));
+                    await codeSystem.findOneAndUpdate(
+                        { guildID: guild.id },
+                        { $inc: { [`activeCodes.${selectedIndex}.Activators`] : 1 } }
+                    )
 
-                    activator[selectedOption['Name']].push(String(user.id));
-                    
 
                     let successEmbed = new EmbedBuilder()
                     .setAuthor({ name: `Оповещения ${guild.name}`, iconURL: guild.iconURL({ forceStatic: false }) })

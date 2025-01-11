@@ -19,9 +19,11 @@ module.exports = {
 
             let db = await battlepassDB.findOne({ userId: interaction.user.id });
 
-            db.activatedCodes = [];
-            await db.save();
-
+            if (!db.activatedCodes) {
+                db.activatedCodes = [];
+                await db.save();
+            }
+            
             const modal = new ModalBuilder()
                 .setCustomId('promocode-modal')
                 .setTitle('Система кодов')

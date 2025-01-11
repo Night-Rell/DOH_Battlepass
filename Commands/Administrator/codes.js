@@ -31,12 +31,9 @@ module.exports = {
             return interaction.reply(`Создан профиль в базе данных`)
         };
 
-
-        
-        let allUsers = await battlepassDB.find({});
         
         const listMessage = db.activeCodes.length > 0
-            ? db.activeCodes.map((item, index) => `${index + 1}. ${item['Name']} (${item['Limit'] > 0 ? ` ${db.Activators[item['Name']].length} / ${item['Limit']}` : ` ${item['Limit']}`} активаций )  -->  ${item['Reward']} сообщений`).join('\n')
+            ? db.activeCodes.map((item, index) => `${index + 1}. ${item['Name']} (${item['Limit'] > 0 ? ` ${item['Activators']} / ${item['Limit']}` : ` ${item['Limit']}`} активаций )  -->  ${item['Reward']} сообщений`).join('\n')
             : 'нету действующих кодов';
 
 
@@ -64,6 +61,6 @@ module.exports = {
             removeCodesBtn.setDisabled(true);
             
             interaction.editReply({ components: [new ActionRowBuilder().setComponents(addCodesBtn, removeCodesBtn)] });
-        }, 30000);
+        }, 15000);
     },
 }
